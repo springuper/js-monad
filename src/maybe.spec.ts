@@ -44,3 +44,20 @@ describe('chaining', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 });
+
+describe('monad laws', () => {
+  const unit = (value: number) => Maybe.just<number>(value);
+  const f = (value: number) => Maybe.just<number>(value * 2);
+  const g = (value: number) => Maybe.just<number>(value - 5);
+  const ma = Maybe.just<number>(13);
+  const assertEqual = (x: Maybe<number>, y: Maybe<number>) => x.value === y.value;
+
+  test('it should satisfy three monad laws', () => {
+    // first law
+    assertEqual(unit(5).bind(f), f(5));
+    // second law
+    assertEqual(ma.bind(unit), ma);
+    // third law
+    assertEqual(ma.bind(f).bind(g), ma.bind(value => f(value).bind(g)));
+  });
+});
